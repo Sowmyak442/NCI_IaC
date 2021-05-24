@@ -1,3 +1,13 @@
+terraform {
+  backend "s3" {
+    bucket        = "tfstatefile442"
+    key           = "workspace/terraform.tfstate"
+    region        = "us-east-1"
+    encrypt       = true
+    profile       = "local"
+  }
+}
+
 module "security_group_alb" {
   source = "../modules/SG"
   sg_name = var.podcat_sg_name_alb
@@ -42,7 +52,6 @@ module "security_group_ec2" {
 data "aws_vpc" "podcat-vpc" {
   default = true
 }
-
 /*
 data "aws_route53_zone" "bento" {
   name = var.route53_zone_name
@@ -59,8 +68,6 @@ module "route53_rec" {
 
 }
 */
-
-
 module "EC2" {
   source = "../modules/EC2"
   ami = var.ami
@@ -68,7 +75,6 @@ module "EC2" {
   instance_type = var.instance_type
   vpc_security_group_ids = [module.security_group_ec2.security_group_id]
 }
-
 
 module "load_balancer" {
   source = "../modules/LB"
